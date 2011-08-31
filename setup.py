@@ -24,6 +24,7 @@ setup(name='raptus.mailcone.core',
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
+          'setuptools',
       ],
       entry_points="""
       # -*- Entry points: -*-
