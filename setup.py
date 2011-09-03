@@ -19,12 +19,13 @@ setup(name='raptus.mailcone.core',
       url='',
       license='GPL',
       packages=find_packages(exclude=['ez_setup']),
-      namespace_packages=['raptus.mailcone'],
+      namespace_packages=['raptus','raptus.mailcone'],
       include_package_data=True,
       zip_safe=False,
       install_requires=[
           # -*- Extra requirements: -*-
           'setuptools',
+          'psycopg2'
       ],
       entry_points="""
       # -*- Entry points: -*-
