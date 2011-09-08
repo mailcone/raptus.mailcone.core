@@ -25,7 +25,11 @@ setup(name='raptus.mailcone.core',
       install_requires=[
           # -*- Extra requirements: -*-
           'setuptools',
-          'psycopg2'
+          'psycopg2',
+          'raptus.mailcone.app',
+          'raptus.mailcone.layout',
+          'raptus.mailcone.customers',
+          'raptus.mailcone.rulesets'
       ],
       entry_points="""
       # -*- Entry points: -*-
