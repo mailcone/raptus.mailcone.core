@@ -25,3 +25,6 @@ class BaseLocator(object):
         for i in self.splitedpath:
             obj = obj[i]
         return obj
+    
+    
+

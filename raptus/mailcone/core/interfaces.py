@@ -23,3 +23,12 @@ class IContainerLocator(interface.Interface):
     def url(self):
         """ return the url from the object
         """
+
+
+class ISearchable(interface.Interface):
+    """ Interface for content models, contract used for indexing """
+    id = interface.Attribute('id')
+    url = interface.Attribute('url')
+    implements = interface.Attribute('implements')
+    name = interface.Attribute('name')
+    address = interface.Attribute('address')
