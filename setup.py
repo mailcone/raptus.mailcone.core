@@ -29,7 +29,10 @@ setup(name='raptus.mailcone.core',
           'raptus.mailcone.app',
           'raptus.mailcone.layout',
           'raptus.mailcone.customers',
-          'raptus.mailcone.rulesets'
+          'raptus.mailcone.rulesets',
+          'z3c.relationfield',
+          'hurry.query',
+
       ],
       entry_points="""
       # -*- Entry points: -*-
