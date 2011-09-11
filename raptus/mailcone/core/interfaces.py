@@ -30,5 +30,13 @@ class ISearchable(interface.Interface):
     id = interface.Attribute('id')
     url = interface.Attribute('url')
     implements = interface.Attribute('implements')
+    text = interface.Attribute('text')
     name = interface.Attribute('name')
     address = interface.Attribute('address')
+    counter = interface.Attribute('counter')
+
+
+
+class ITextIdManager(interface.Interface):
+    """ 
+    """
