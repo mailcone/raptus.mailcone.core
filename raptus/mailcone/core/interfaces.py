@@ -7,8 +7,25 @@ class IMailcone(interface.Interface):
     """
 
 class IContainer(interface.Interface):
-    """ base interface for all container objects
+    """ A container for objects implementing TextIdManager
     """
+    
+    def add_object(obj):
+        """ Adds a new object and returns the generated id
+        """
+    
+    def get_object(id):
+        """ Returns the specified object
+        """
+    
+    def del_object(id):
+        """ Deletes the specified object
+        """
+    
+    def objects():
+        """ Iterator over the contained objects
+        """
+    
 
 class IContainerLocator(interface.Interface):
     """ Base interface for locate container instances

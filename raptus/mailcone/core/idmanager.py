@@ -2,8 +2,8 @@ import grok, re
 
 from zope.component import queryMultiAdapter
 
+from raptus.mailcone.core import utils
 from raptus.mailcone.core import interfaces
-
 
 
 class TextIdManager(grok.GlobalUtility):
@@ -18,23 +18,23 @@ class TextIdManager(grok.GlobalUtility):
         """
         return self.re_chars.sub('', self.re_ws.sub('_', name)).lower()
     
-    def idFromName(self, container, request, name):
+    def idFromName(self, container, name):
         """ Returns a valid ID from a name
         """
         id = self.normalize(name)
-        if not self.idCheck(container, request, id):
+        if not self.idCheck(container, id):
             i = 2
-            while not self.idCheck(container, request, '%s-%s' % (id, i) ):
+            while not self.idCheck(container, '%s-%s' % (id, i) ):
                 i += 1
             id = '%s-%s' % (id, i)
         return str(id)
     
-    def idCheck(self, container, request, id):
+    def idCheck(self, container, id):
         """ return True if the the id can be used or False if a view allready are in the way
         """
         if id in container:
             return False
-        if queryMultiAdapter((container, request),name=id):
+        if queryMultiAdapter((container, utils.getRequest()),name=id):
             return False
         return True
         
