@@ -51,6 +51,7 @@ class ISearchable(interface.Interface):
     name = interface.Attribute('name')
     address = interface.Attribute('address')
     counter = interface.Attribute('counter')
+    description = interface.Attribute('description')
 
 
 

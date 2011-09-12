@@ -8,6 +8,9 @@ from zc.catalog.catalogindex import ValueIndex
 from raptus.mailcone.core import interfaces
 from raptus.mailcone.customers.contents import Customer
 
+from raptus.mailcone.rules.contents import Ruleset
+
+
 
 
 class Value(index.IndexDefinition):
@@ -16,7 +19,7 @@ class Value(index.IndexDefinition):
 
 class ContentIndexes(grok.Indexes):
     """
-        Sitewide indexes for objects providing ISearchableContent
+        Sitewide indexes for objects providing ISearchable
     """
     grok.context(interfaces.ISearchable)
     grok.site(interfaces.IMailcone)
@@ -28,9 +31,13 @@ class ContentIndexes(grok.Indexes):
     url = index.Field()
     implements = index.Set()
     text = index.Text()
-
+    
+    #Customers
     name = index.Field()
     address = index.Field()
+
+    #Rulesets
+    description = index.Field()
 
 
 class Searchable(grok.Adapter):
@@ -66,3 +73,6 @@ class SearchableCustomer(Searchable):
     fulltext_attributes = ['name', 'address']
     
     
+class SearchableRuleset(Searchable):
+    grok.context(Ruleset)
+    fulltext_attributes = ['name', 'address', 'description']
