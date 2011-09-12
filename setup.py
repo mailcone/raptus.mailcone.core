@@ -29,7 +29,7 @@ setup(name='raptus.mailcone.core',
           'raptus.mailcone.app',
           'raptus.mailcone.layout',
           'raptus.mailcone.customers',
-          'raptus.mailcone.rulesets',
+          'raptus.mailcone.rules',
           'z3c.relationfield',
           'hurry.query',
 
