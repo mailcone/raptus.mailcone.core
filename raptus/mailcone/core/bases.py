@@ -33,6 +33,8 @@ class Container(grok.Container):
     grok.implements(interfaces.IContainer)
     grok.baseclass()
     
+    id = None
+    
     def build_id(self, raw_id):
         """ create a id with the name attribute from the object.
             if this object has no name attribute this method must be overrided
@@ -43,7 +45,6 @@ class Container(grok.Container):
         """ Adds a new object and returns the generated id
         """
         obj.id = self.build_id(raw_id)
-        self._last = obj
         self[str(obj.id)] = obj
         return obj.id
     
