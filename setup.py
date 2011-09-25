@@ -30,6 +30,7 @@ setup(name='raptus.mailcone.core',
           'raptus.mailcone.layout',
           'raptus.mailcone.customers',
           'raptus.mailcone.rules',
+          'raptus.mailcone.cronjob',
           'z3c.relationfield',
           'hurry.query',
 
