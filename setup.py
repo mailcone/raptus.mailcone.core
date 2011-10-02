@@ -25,17 +25,19 @@ setup(name='raptus.mailcone.core',
       install_requires=[
           # -*- Extra requirements: -*-
           'setuptools',
+          'Paste',
           'psycopg2',
           'raptus.mailcone.app',
           'raptus.mailcone.layout',
           'raptus.mailcone.customers',
           'raptus.mailcone.rules',
+          'raptus.mailcone.mails',
           'raptus.mailcone.cronjob',
-          'z3c.relationfield',
+          'megrok.rdb',
           'hurry.query',
 
       ],
-      entry_points="""
-      # -*- Entry points: -*-
-      """,
+      entry_points={
+
+      },
       )

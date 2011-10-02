@@ -1,8 +1,16 @@
 import grok
 
+from megrok import rdb
+
 from zope import component
 
+from z3c.saconfig.interfaces import IScopedSession
+from z3c.saconfig import Session
+
 from raptus.mailcone.core import interfaces
+
+
+
 
 
 class BaseLocator(object):
@@ -25,7 +33,8 @@ class BaseLocator(object):
         for i in self.splitedpath:
             obj = obj[i]
         return obj
-    
+
+
 
 class Container(grok.Container):
     """ A container for objects implementing IIntId
@@ -62,4 +71,37 @@ class Container(grok.Container):
         """ Iterator over the contained objects
         """
         return self.values()
+
+
+
+class QueryContainer(rdb.QueryContainer, Container):
+    grok.baseclass()
+    """ a base container for a root container on a sql database.
     
+        Note: you need to override query method.
+    """
+
+
+    def get(self, key, default=None):
+        try:
+            id = int(key)
+        except ValueError:
+            return default
+        try:
+            return self[id]
+        except KeyError:
+            return default
+
+    @property
+    def session(self):
+        return Session()
+
+
+
+
+
+
+
+
+
+
