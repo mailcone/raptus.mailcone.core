@@ -21,7 +21,7 @@ class Schema(martian.ClassGrokker):
         for schema in schemas:
             for attr in schema:
                 value = getattr(class_, attr, None)
-                if not interfaces.IField.providedBy(schema.get(attr)) or isinstance(value, Column):
+                if not interfaces.IField.providedBy(schema.get(attr)) or hasattr(class_, attr):
                     continue
                 field = schema.get(attr, None)
                 column = None
