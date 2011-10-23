@@ -5,45 +5,92 @@ from megrok import rdb
 
 from zope.schema import interfaces
 
-from sqlalchemy import Column
-from sqlalchemy.types import Integer, String, Date, Text, Boolean
-
+from sqlalchemy.orm import relation, mapper
+from sqlalchemy import Column, Table, MetaData, ForeignKey
+from sqlalchemy.types import Integer, Unicode, Date, Text, Boolean
+from sqlalchemy.orm.collections import InstrumentedList as BaseInstrumentedList
 from raptus.mailcone.core import database
 
+
+
+
+
+class InstrumentedList(BaseInstrumentedList):
+
+    def __getattribute__(self, name):
+        if name == 'append':
+            return self._mc_append
+        return BaseInstrumentedList.__getattribute__(self, name)
+    
+    def _mc_append(self, value):
+        func = BaseInstrumentedList.__getattribute__(self, 'append')
+        func(self.__list_type_class__(value))
+
+
+
+class ListString(unicode):
+    
+    def __init__(self, value):
+        self.value = value
 
 
 
 class Schema(martian.ClassGrokker):
     martian.component(rdb.Model)
     martian.directive(database.schema, name='schemas')
+    martian.directive(rdb.tablename)
     
-    def execute(self, class_, schemas, config):
+    def execute(self, class_, schemas, tablename, config):
         for schema in schemas:
             for attr in schema:
                 value = getattr(class_, attr, None)
                 if not interfaces.IField.providedBy(schema.get(attr)) or hasattr(class_, attr):
                     continue
                 field = schema.get(attr, None)
-                column = None
-                if interfaces.ITextLine.providedBy(field):
-                    column = Column(field.__name__, String(field.max_length))
-    
-                elif interfaces.IDate.providedBy(field):
-                    column = Column(field.__name__, Date)
-    
-                elif interfaces.IInt.providedBy(field):
-                    column = Column(field.__name__, Integer)
-    
-                elif interfaces.IBool.providedBy(field):
-                    column = Column(field.__name__, Boolean)
-    
-                elif interfaces.IText.providedBy(field):
-                    column = Column(field.__name__, Text)
-                    
+                if interfaces.IList.providedBy(field):
+                    cls = type('%s@%s' % (ListString.__name__,field.__name__,), (ListString,),
+                                          dict(ListString.__dict__))
+                    metadata = database.create_metadata
+                    name = 'list_%s' % field.__name__
+                    column = Column(field.__name__, Integer, primary_key=True, unique=True)
+                    setattr(class_, attr, column)
+                    listtype = self.column(field.value_type, field.__name__)
+                    table = Table(name, metadata,
+                                  Column('id_rel_%s' % tablename, Integer, primary_key=True, unique=True),
+                                  Column('rel_%s' % tablename, Integer, ForeignKey(column)),
+                                  listtype,)
+                    mapped = mapper(cls, table, properties=dict(
+                                        value=table.c.get(field.__name__),
+                                    ))
+                    setattr(class_, '%s_relation_id' % field.__name__, column)
+                    cls_list = type('%s@%s' % (InstrumentedList.__name__,field.__name__,), (BaseInstrumentedList,),
+                                              dict(InstrumentedList.__dict__))
+                    cls_list.__list_type_class__ = cls
+                    column = relation(mapped, collection_class=cls_list, lazy='immediate')
+                else:
+                    column = self.column(field)
                 setattr(class_, attr, column)
 
         return True
 
+    def column(self, field, name=None):
+        if name is None:
+            name = field.__name__
+        column = None
+        if interfaces.ITextLine.providedBy(field):
+            column = Column(name, Unicode(field.max_length))
 
+        elif interfaces.IDate.providedBy(field):
+            column = Column(name, Date)
 
+        elif interfaces.IInt.providedBy(field):
+            column = Column(name, Integer)
+
+        elif interfaces.IBool.providedBy(field):
+            column = Column(name, Boolean)
+
+        elif interfaces.IText.providedBy(field):
+            column = Column(name, Text)
+        return column
+        
 
