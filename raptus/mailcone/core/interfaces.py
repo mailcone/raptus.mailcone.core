@@ -52,9 +52,31 @@ class ISearchable(interface.Interface):
     address = interface.Attribute('address')
     counter = interface.Attribute('counter')
     description = interface.Attribute('description')
-
+    task = interface.Attribute('task')
+    status = interface.Attribute('status')
 
 
 class ITextIdManager(interface.Interface):
-    """ 
-    """
+
+    def normalize(self, name):
+        """ Returns a normalized string usable in URL based on the name provided
+        """
+    
+    def idFromName(self, container, name):
+        """ Returns a valid ID from a name
+        """
+    
+    def idCheck(self, container, id):
+        """ return True if the the id can be used or False if a view allready are in the way
+        """
+
+
+
+class IIntIdManager(interface.Interface):
+    
+    def nextId(self, container):
+        """ Returns the next valid ID as Int
+        """
+
+
+

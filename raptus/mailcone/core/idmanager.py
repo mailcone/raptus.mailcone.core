@@ -37,4 +37,19 @@ class TextIdManager(grok.GlobalUtility):
         if queryMultiAdapter((container, utils.getRequest()),name=id):
             return False
         return True
-        
+
+
+
+class IntIdManager(TextIdManager):
+    grok.provides(interfaces.IIntIdManager)
+    
+    def nextId(self, container):
+        """ Returns a valid ID from a name
+        """
+        id = 1
+        while not self.idCheck(container, str(id)):
+            id += 1
+        return id
+
+
+

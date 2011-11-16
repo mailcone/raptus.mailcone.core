@@ -29,7 +29,7 @@ class BaseLocator(object):
         return grok.url(request, self._obj())
     
     def _obj(self):
-        obj = component.hooks.getSite()
+        obj = grok.getSite()
         for i in self.splitedpath:
             obj = obj[i]
         return obj

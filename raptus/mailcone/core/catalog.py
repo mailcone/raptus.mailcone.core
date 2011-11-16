@@ -5,11 +5,11 @@ from zope.app.component.hooks import getSite
 from zope.interface import providedBy
 from zc.catalog.catalogindex import ValueIndex
 
-from raptus.mailcone.core import interfaces
 from raptus.mailcone.customers.contents import Customer
-
 from raptus.mailcone.rules.contents import Ruleset
+from raptus.mailcone.cronjob.contents import CronJob
 
+from raptus.mailcone.core import interfaces
 
 
 
@@ -38,6 +38,11 @@ class ContentIndexes(grok.Indexes):
 
     #Rulesets
     description = index.Field()
+    
+    #Cronjob
+    task = index.Field()
+    status = index.Field()
+
 
 
 class Searchable(grok.Adapter):
@@ -59,7 +64,15 @@ class Searchable(grok.Adapter):
             implements.append(iface.__identifier__)
             implements.extend([base.__identifier__ for base in iface.getBases()])
         return implements
+    
+    @property
+    def task(self):
+        return getattr(self.context, 'task', None)
 
+    @property
+    def status(self):
+        return getattr(self.context, 'status', None)
+    
     @property
     def text(self):
         text = list()
@@ -76,3 +89,11 @@ class SearchableCustomer(Searchable):
 class SearchableRuleset(Searchable):
     grok.context(Ruleset)
     fulltext_attributes = ['name', 'address', 'description']
+    
+
+class SearchableCronJob(Searchable):
+    grok.context(CronJob)
+    fulltext_attributes = ['task', 'status', 'description']
+
+
+
