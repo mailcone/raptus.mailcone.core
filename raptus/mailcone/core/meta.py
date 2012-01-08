@@ -52,8 +52,16 @@ class Schema(martian.ClassGrokker):
                                           dict(ListString.__dict__))
                     metadata = database.create_metadata
                     name = 'list_%s' % field.__name__
-                    column = Column(field.__name__, Integer, primary_key=True, unique=True)
-                    setattr(class_, attr, column)
+                    
+                    #column = Column(field.__name__, Integer, primary_key=True, unique=True)
+                    column = None
+                    for key, value in class_.__dict__.iteritems():
+                        if isinstance(value, Column) and value.primary_key:
+                            column = value
+                            break
+                    if column is None:
+                        raise NotImplementedError('you need specified one primary_key')
+                    
                     listtype = self.column(field.value_type, field.__name__)
                     table = Table(name, metadata,
                                   Column('id_rel_%s' % tablename, Integer, primary_key=True, unique=True),
@@ -62,7 +70,6 @@ class Schema(martian.ClassGrokker):
                     mapped = mapper(cls, table, properties=dict(
                                         value=table.c.get(field.__name__),
                                     ))
-                    setattr(class_, '%s_relation_id' % field.__name__, column)
                     cls_list = type('%s@%s' % (InstrumentedList.__name__,field.__name__,), (BaseInstrumentedList,),
                                               dict(InstrumentedList.__dict__))
                     cls_list.__list_type_class__ = cls
