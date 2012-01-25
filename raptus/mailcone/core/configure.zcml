@@ -1,5 +1,6 @@
 <configure xmlns="http://namespaces.zope.org/zope"
            xmlns:grok="http://namespaces.zope.org/grok"
+           xmlns:browser="http://namespaces.zope.org/browser"
            i18n_domain="raptus.mailcone.core"
            xmlns:i18n="http://namespaces.zope.org/i18n">
   <include package="grok" />
@@ -7,6 +8,16 @@
   <grok:grok package="." />
   
   <i18n:registerTranslations directory="locales" />
+
+
+  <!-- fixed missing import. extend this for other missing files views. -->
+  <browser:page
+      name="index.html"
+      for="zope.app.file.interfaces.IImage"
+      permission="zope.View"
+      allowed_attributes="__call__ tag"
+      class="zope.app.file.browser.image.ImageData"
+      />
 
   
 </configure>
