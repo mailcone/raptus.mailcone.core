@@ -3,6 +3,7 @@ import grok
 from megrok import rdb
 
 from zope import component
+from z3c.blobfile import File
 
 from z3c.saconfig.interfaces import IScopedSession
 from z3c.saconfig import Session
@@ -98,8 +99,9 @@ class QueryContainer(rdb.QueryContainer, Container):
 
 
 
-
-
+class LogFile(File):
+    """
+    """
 
 
 
