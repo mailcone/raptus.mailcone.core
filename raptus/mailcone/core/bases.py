@@ -50,9 +50,12 @@ class Container(grok.Container):
         """
         return component.getUtility(interfaces.ITextIdManager).idFromName(self, raw_id)
     
-    def add_object(self, obj, raw_id):
+    def add_object(self, obj, raw_id=None):
         """ Adds a new object and returns the generated id
         """
+        if raw_id is None:
+            raw_id = str(component.getUtility(interfaces.IIntIdManager).nextId(self))
+        
         obj.id = self.build_id(raw_id)
         self[str(obj.id)] = obj
         return obj.id

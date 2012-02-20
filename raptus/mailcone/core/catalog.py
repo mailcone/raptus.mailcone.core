@@ -8,6 +8,7 @@ from zc.catalog.catalogindex import ValueIndex
 from raptus.mailcone.customers.contents import Customer
 from raptus.mailcone.rules.contents import Ruleset
 from raptus.mailcone.cronjob.contents import CronJob
+from raptus.mailcone.persistentlog.contents import Log
 
 from raptus.mailcone.core import interfaces
 
@@ -43,6 +44,10 @@ class ContentIndexes(grok.Indexes):
     task = index.Field()
     status = index.Field()
 
+    #Persistent Log
+    log_from = index.Field()
+    log_to = index.Field()
+    category = index.Field()
 
 
 class Searchable(grok.Adapter):
@@ -83,17 +88,20 @@ class Searchable(grok.Adapter):
 
 class SearchableCustomer(Searchable):
     grok.context(Customer)
-    fulltext_attributes = ['name', 'address']
+    fulltext_attributes = ['id', 'name', 'address']
     
     
 class SearchableRuleset(Searchable):
     grok.context(Ruleset)
-    fulltext_attributes = ['name', 'address', 'description']
+    fulltext_attributes = ['id', 'name', 'address', 'description']
     
 
 class SearchableCronJob(Searchable):
     grok.context(CronJob)
-    fulltext_attributes = ['task', 'status', 'description']
+    fulltext_attributes = ['id', 'task', 'status', 'description']
 
 
+class SearchableLog(Searchable):
+    grok.context(Log)
+    fulltext_attributes = ['id', 'log_from', 'log_to', 'category']
 

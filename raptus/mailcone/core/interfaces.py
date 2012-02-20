@@ -54,6 +54,9 @@ class ISearchable(interface.Interface):
     description = interface.Attribute('description')
     task = interface.Attribute('task')
     status = interface.Attribute('status')
+    log_from = interface.Attribute('log_from')
+    log_to = interface.Attribute('log_to')
+    category = interface.Attribute('category')
 
 
 class ITextIdManager(interface.Interface):
