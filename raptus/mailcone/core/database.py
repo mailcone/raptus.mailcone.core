@@ -2,11 +2,13 @@ import grok
 
 from megrok import rdb
 
+from zope.lifecycleevent import modified
 from zope.schema.interfaces import IField
 from zope.interface.interfaces import IInterface
 
 from sqlalchemy.engine.url import URL
 
+from sqlalchemy.orm.interfaces import SessionExtension
 from z3c.saconfig import EngineFactory, GloballyScopedSession
 from z3c.saconfig.interfaces import IEngineFactory, IScopedSession, IEngineCreatedEvent
 
@@ -31,7 +33,25 @@ def engine():
 
 grok.global_utility(engine(), provides=IEngineFactory, direct=True)
 
-scoped_session = GloballyScopedSession()
+
+
+class ModificationEvent(SessionExtension):
+
+    def before_commit(self, session):
+        for i in session:
+            modified(i)
+
+
+
+class GloballyScopedSessionMailcone(GloballyScopedSession):
+
+    def __init__(self, engine=u'', **kw):
+        super(GloballyScopedSessionMailcone, self).__init__(engine, **kw)
+        zopeex = self.kw['extension']
+        self.kw['extension'] = (ModificationEvent(), zopeex)
+
+
+scoped_session = GloballyScopedSessionMailcone()
 grok.global_utility(scoped_session, provides=IScopedSession, direct=True)
 
 
