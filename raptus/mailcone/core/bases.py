@@ -101,5 +101,26 @@ class QueryContainer(rdb.QueryContainer, Container):
 
 
 
+class ORMModel(rdb.Model):
+    """ fixed __name__
+    """
+    grok.baseclass()
+    
+    __unicode_name__ = None
+    
+    @property
+    def __name__(self):
+        return self.__unicode_name__
+    
+    @__name__.setter
+    def __name__(self, name):
+        self.__unicode_name__ = unicode(name)
+    
+    
+    
+
+
+
+
 
 
