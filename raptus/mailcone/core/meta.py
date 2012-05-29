@@ -7,7 +7,7 @@ from zope.schema import interfaces
 
 from sqlalchemy.orm import relation, mapper
 from sqlalchemy import Column, Table, MetaData, ForeignKey
-from sqlalchemy.types import Integer, Unicode, Date, Text, Boolean
+from sqlalchemy.types import Integer, Unicode, Date, UnicodeText, Boolean
 from sqlalchemy.orm.collections import InstrumentedList as BaseInstrumentedList
 from raptus.mailcone.core import database
 
@@ -97,7 +97,7 @@ class Schema(martian.ClassGrokker):
             column = Column(name, Boolean)
 
         elif interfaces.IText.providedBy(field):
-            column = Column(name, Text)
+            column = Column(name, UnicodeText)
         return column
         
 
