@@ -58,9 +58,8 @@ class Searchable(grok.Adapter):
     
     fulltext_attributes = []
     
-    @property
-    def id(self):
-        return getattr(self.context, 'id', None)
+    def __getattr__(self, name):
+        return getattr(self.context, name, None)
     
     @property
     def implements(self):
@@ -69,14 +68,6 @@ class Searchable(grok.Adapter):
             implements.append(iface.__identifier__)
             implements.extend([base.__identifier__ for base in iface.getBases()])
         return implements
-    
-    @property
-    def task(self):
-        return getattr(self.context, 'task', None)
-
-    @property
-    def status(self):
-        return getattr(self.context, 'status', None)
     
     @property
     def text(self):
