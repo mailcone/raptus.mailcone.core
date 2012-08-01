@@ -84,7 +84,7 @@ class SearchableCustomer(Searchable):
     
 class SearchableRuleset(Searchable):
     grok.context(Ruleset)
-    fulltext_attributes = ['id', 'name', 'address', 'description']
+    fulltext_attributes = ['id', 'name', 'description']
     
 
 class SearchableCronJob(Searchable):
