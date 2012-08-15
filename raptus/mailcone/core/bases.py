@@ -3,6 +3,8 @@ import grok
 from megrok import rdb
 
 from zope import component
+from zope.lifecycleevent import ObjectRemovedEvent
+from zope.event import notify
 
 from z3c.saconfig.interfaces import IScopedSession
 from z3c.saconfig import Session
@@ -99,6 +101,11 @@ class QueryContainer(rdb.QueryContainer, Container):
     def session(self):
         return Session()
 
+    def __delitem__(self, key):
+        session = rdb.Session()
+        obj = self[key]
+        session.delete(obj)
+        notify(ObjectRemovedEvent(obj, self, unicode(obj.id)))
 
 
 class ORMModel(rdb.Model):
