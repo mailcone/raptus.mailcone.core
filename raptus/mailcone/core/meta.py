@@ -18,10 +18,16 @@ from raptus.mailcone.core import database
 class InstrumentedList(BaseInstrumentedList):
 
     def __getattribute__(self, name):
+        if name == '_sa_appender':
+            return self._mc_appender
         if name == 'append':
             return self._mc_append
         return BaseInstrumentedList.__getattribute__(self, name)
-    
+
+    def _mc_appender(self, obj, **kwargs):
+        func = BaseInstrumentedList.__getattribute__(self, '_sa_appender')
+        func(self.__list_type_class__(obj.value), **kwargs)
+        
     def _mc_append(self, value):
         func = BaseInstrumentedList.__getattribute__(self, 'append')
         func(self.__list_type_class__(value))
@@ -29,8 +35,9 @@ class InstrumentedList(BaseInstrumentedList):
 
 
 class ListString(unicode):
-    
+
     def __init__(self, value):
+        super(ListString, self).__init__(value)
         self.value = value
 
 
@@ -87,7 +94,8 @@ class Schema(martian.ClassGrokker):
         if interfaces.ITextLine.providedBy(field):
             column = Column(name, Unicode(field.max_length))
 
-        elif interfaces.IDate.providedBy(field):
+        elif (interfaces.IDate.providedBy(field) or 
+              interfaces.IDatetime.providedBy(field)):
             column = Column(name, DateTime)
 
         elif interfaces.IInt.providedBy(field):
