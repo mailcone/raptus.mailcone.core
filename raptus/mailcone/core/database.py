@@ -2,12 +2,13 @@ import grok
 
 from megrok import rdb
 
+from zope.event import notify
 from zope.lifecycleevent import modified
 from zope.schema.interfaces import IField
 from zope.interface.interfaces import IInterface
+from zope.lifecycleevent import ObjectRemovedEvent
 
 from sqlalchemy.engine.url import URL
-
 from sqlalchemy.orm.interfaces import SessionExtension
 from z3c.saconfig import EngineFactory, GloballyScopedSession
 from z3c.saconfig.interfaces import IEngineFactory, IScopedSession, IEngineCreatedEvent
@@ -35,7 +36,14 @@ grok.global_utility(engine(), provides=IEngineFactory, direct=True)
 
 
 
-class ModificationEvent(SessionExtension):
+class SQLAlchemyEvent(SessionExtension):
+
+    def before_flush(self, session, flush_context, instances):
+        for obj in session.deleted:
+            parent = getattr(obj, '__parent__', None)
+            name = unicode(getattr(obj, 'id', None))
+            notify(ObjectRemovedEvent(obj, parent, name))
+
 
     def before_commit(self, session):
         for i in session:
@@ -48,7 +56,7 @@ class GloballyScopedSessionMailcone(GloballyScopedSession):
     def __init__(self, engine=u'', **kw):
         super(GloballyScopedSessionMailcone, self).__init__(engine, **kw)
         zopeex = self.kw['extension']
-        self.kw['extension'] = (ModificationEvent(), zopeex)
+        self.kw['extension'] = (SQLAlchemyEvent(), zopeex)
 
 
 scoped_session = GloballyScopedSessionMailcone()

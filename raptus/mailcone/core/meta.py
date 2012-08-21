@@ -72,7 +72,7 @@ class Schema(martian.ClassGrokker):
                     listtype = self.column(field.value_type, field.__name__)
                     table = Table(name, metadata,
                                   Column('id_rel_%s' % tablename, Integer, primary_key=True, unique=True),
-                                  Column('rel_%s' % tablename, Integer, ForeignKey(column)),
+                                  Column('rel_%s' % tablename, Integer, ForeignKey(column, ondelete='CASCADE')),
                                   listtype,)
                     mapped = mapper(cls, table, properties=dict(
                                         value=table.c.get(field.__name__),
@@ -80,7 +80,10 @@ class Schema(martian.ClassGrokker):
                     cls_list = type('%s@%s' % (InstrumentedList.__name__,field.__name__,), (BaseInstrumentedList,),
                                               dict(InstrumentedList.__dict__))
                     cls_list.__list_type_class__ = cls
-                    column = relation(mapped, collection_class=cls_list, lazy='immediate')
+                    column = relation(mapped,
+                                      collection_class=cls_list,
+                                      lazy='immediate',
+                                      backref='__parent__',)
                 else:
                     column = self.column(field)
                 setattr(class_, attr, column)
