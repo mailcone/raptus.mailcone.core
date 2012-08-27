@@ -43,6 +43,8 @@ class ContentIndexes(grok.Indexes):
     #Cronjob
     task = index.Field()
     status = index.Field()
+    started = index.Field()
+    time_of_next_call = index.Field()
 
     #Persistent Log
     log_from = index.Field()

@@ -57,7 +57,8 @@ class ISearchable(interface.Interface):
     log_from = interface.Attribute('log_from')
     log_to = interface.Attribute('log_to')
     category = interface.Attribute('category')
-
+    started = interface.Attribute('started')
+    time_of_next_call = interface.Attribute('time_of_next_call')
 
 class ITextIdManager(interface.Interface):
 
