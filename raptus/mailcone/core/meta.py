@@ -7,7 +7,7 @@ from zope.schema import interfaces
 
 from sqlalchemy.orm import relation, mapper
 from sqlalchemy import Column, Table, MetaData, ForeignKey
-from sqlalchemy.types import Integer, Unicode, DateTime, UnicodeText, Boolean
+from sqlalchemy.types import Integer, BigInteger, Unicode, DateTime, UnicodeText, Boolean
 from sqlalchemy.orm.collections import InstrumentedList as BaseInstrumentedList
 from raptus.mailcone.core import database
 
@@ -71,8 +71,8 @@ class Schema(martian.ClassGrokker):
                     
                     listtype = self.column(field.value_type, field.__name__)
                     table = Table(name, metadata,
-                                  Column('id_rel_%s' % tablename, Integer, primary_key=True, unique=True),
-                                  Column('rel_%s' % tablename, Integer, ForeignKey(column, ondelete='CASCADE')),
+                                  Column('id_rel_%s' % tablename, BigInteger, primary_key=True, unique=True),
+                                  Column('rel_%s' % tablename, BigInteger, ForeignKey(column, ondelete='CASCADE')),
                                   listtype,)
                     mapped = mapper(cls, table, properties=dict(
                                         value=table.c.get(field.__name__),
